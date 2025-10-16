@@ -1,0 +1,17 @@
+function bubble(A, n)
+begin
+    for i <- 1 to n do
+    begin
+        for j <- 1 to n do
+        begin
+            if (A[j] > A[j+1]) then
+            begin
+                tmp <- A[j];
+                A[j] <- A[j+1];
+                A[j+1] <- tmp;
+            end
+            else
+            begin end
+        end
+    end
+end

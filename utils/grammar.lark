@@ -1,0 +1,102 @@
+// utils/grammar.lark
+// Gramática flexible para pseudocódigo
+
+start: stmt*
+
+?stmt: funcdef
+     | assign
+     | for_loop
+     | while_loop
+     | repeat_loop
+     | if_stmt
+     | call_stmt
+     | return_stmt
+     | block
+     | ";" -> empty
+
+funcdef: "function" NAME "(" [params] ")" ["begin"] stmt* ["end"]
+params: NAME ("," NAME)*
+
+// Asignación flexible: soporta <- y =
+assign: NAME ("<-" | "=") expr ";"
+
+// Expresiones con precedencia correcta
+?expr: comparison
+
+?comparison: arith
+           | arith ("<" | "<=" | ">" | ">=" | "==" | "=" | "!=" | "<>") arith -> comp_op
+
+?arith: term
+      | arith "+" term  -> add
+      | arith "-" term  -> sub
+
+?term: factor
+     | term "*" factor -> mul
+     | term "/" factor -> div
+     | term "mod" factor -> mod
+
+?factor: power
+       | "+" factor -> pos
+       | "-" factor -> neg
+
+?power: atom
+      | atom "^" factor -> pow
+
+?atom: NUMBER -> number
+     | NAME -> var
+     | func_call
+     | array_access
+     | "length" "(" NAME ")" -> length
+     | "(" expr ")"
+
+// Acceso a array: a[i], a[j+1], etc.
+array_access: NAME "[" expr "]"
+
+// Llamada a función flexible: con o sin "call"
+func_call: ["call"] NAME "(" [args] ")"
+
+// FOR flexible: soporta múltiples sintaxis
+// for i <- 1 to n
+// for i from 1 to n  
+// for i = 1 to n
+for_loop: "for" NAME ("<-" | "from" | "=") expr "to" expr ["step" expr] ["do"] ["begin"] stmt* ["end"]
+
+// WHILE flexible: con o sin paréntesis
+while_loop: "while" ["("] expr [")"] ["do"] ["begin"] stmt* ["end"]
+
+// REPEAT-UNTIL flexible
+repeat_loop: "repeat" ["begin"] stmt* ["end"] "until" ["("] expr [")"] [";"]
+
+// IF flexible: con o sin paréntesis, con o sin begin/end
+if_stmt: "if" ["("] expr [")"] "then" ["begin"] stmt* ["end"] 
+         ["else" ["begin"] stmt* ["end"]]
+
+// ELSE IF (elif, elseif, else if)
+| "if" ["("] expr [")"] "then" ["begin"] stmt* ["end"]
+  ("elif" | "elseif" | "else" "if") ["("] expr [")"] "then" ["begin"] stmt* ["end"]
+  ["else" ["begin"] stmt* ["end"]]
+
+// Bloque genérico
+block: "begin" stmt* "end"
+
+// Llamada a función como statement
+call_stmt: ["call"] NAME "(" [args] ")" ";"
+
+args: expr ("," expr)*
+
+// RETURN flexible: con o sin punto y coma
+return_stmt: "return" expr [";"]
+
+// Soporta nombres con mayúsculas y minúsculas
+NAME: /[a-zA-Z_][a-zA-Z0-9_]*/i
+NUMBER: /\d+(\.\d+)?/  // Soporta decimales
+
+%import common.WS
+%ignore WS
+
+// Comentarios de una línea: // o #
+%ignore /\/\/[^\n]*/
+%ignore /#[^\n]*/
+
+// Comentarios de múltiples líneas: /* */
+%ignore /\/\*(.|\n)*?\*\//
