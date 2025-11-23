@@ -1,0 +1,13 @@
+function mat_mult(n)
+begin
+    for i <- 1 to n do
+    begin
+        for j <- 1 to n do
+        begin
+            for k <- 1 to n do
+            begin
+                val <- val + 1;
+            end
+        end
+    end
+end

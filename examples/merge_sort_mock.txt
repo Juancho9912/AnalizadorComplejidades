@@ -1,0 +1,14 @@
+function mergesort(n)
+begin
+    if (n <= 1) then
+        return 1;
+    else
+    begin
+        call mergesort(n / 2);
+        call mergesort(n / 2);
+        for i <- 1 to n do
+        begin
+             x <- x + 1;
+        end
+    end
+end

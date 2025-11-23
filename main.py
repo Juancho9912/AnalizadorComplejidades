@@ -9,6 +9,7 @@ Ejecuta el análisis sobre un archivo de pseudocódigo.
 from lexer_parser import parse_pseudocode
 from complexity_analyzer import Analyzer, cost_to_str
 from llm_validator import compare_results
+from visualizer import print_ast_tree
 
 def analyze_file(path):
     with open(path, "r", encoding="utf-8") as f:
@@ -16,6 +17,12 @@ def analyze_file(path):
 
     print(f"Analizando: {path}\n")
     ast = parse_pseudocode(src)
+    
+    # Fase 3: Visualización del AST
+    print("Estructura del Código (AST):")
+    print_ast_tree(ast)
+    print("-" * 50 + "\n")
+
     analyzer = Analyzer(ast)
     worst, best, avg = analyzer.analyze()
 
