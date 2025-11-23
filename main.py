@@ -8,6 +8,7 @@ Ejecuta el análisis sobre un archivo de pseudocódigo.
 
 from lexer_parser import parse_pseudocode
 from complexity_analyzer import Analyzer, cost_to_str
+from llm_validator import compare_results
 
 def analyze_file(path):
     with open(path, "r", encoding="utf-8") as f:
@@ -27,6 +28,10 @@ def analyze_file(path):
         print("\n  Explicación:")
         for line in analyzer.log:
             print(f"    - {line}")
+            
+    # Fase 2: Validación con LLM
+    compare_results(path, cost_to_str(worst), src)
+    
     print("-" * 50)
 
 
