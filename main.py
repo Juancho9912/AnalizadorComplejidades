@@ -22,6 +22,11 @@ def analyze_file(path):
     print(f"  Peor caso (O): {cost_to_str(worst)}")
     print(f"  Mejor caso (Ω): {cost_to_str(best)}")
     print(f"  Promedio (Θ): {cost_to_str(avg)}")
+    
+    if analyzer.log:
+        print("\n  Explicación:")
+        for line in analyzer.log:
+            print(f"    - {line}")
     print("-" * 50)
 
 

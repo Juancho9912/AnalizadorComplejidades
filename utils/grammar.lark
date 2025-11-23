@@ -14,17 +14,19 @@ start: stmt*
      | block
      | ";" -> empty
 
-funcdef: "function" NAME "(" [params] ")" ["begin"] stmt* ["end"]
+funcdef: "function" NAME "(" [params] ")" stmt* ["end"]
 params: NAME ("," NAME)*
 
 // Asignación flexible: soporta <- y =
-assign: NAME ("<-" | "=") expr ";"
+assign: (NAME | array_access) ("<-" | "=") expr ";"
 
 // Expresiones con precedencia correcta
 ?expr: comparison
 
 ?comparison: arith
-           | arith ("<" | "<=" | ">" | ">=" | "==" | "=" | "!=" | "<>") arith -> comp_op
+           | arith COMP_OP arith -> comp_op
+
+COMP_OP: "<=" | ">=" | "==" | "!=" | "<>" | "<" | ">" | "="
 
 ?arith: term
       | arith "+" term  -> add
@@ -59,22 +61,23 @@ func_call: ["call"] NAME "(" [args] ")"
 // for i <- 1 to n
 // for i from 1 to n  
 // for i = 1 to n
-for_loop: "for" NAME ("<-" | "from" | "=") expr "to" expr ["step" expr] ["do"] ["begin"] stmt* ["end"]
+for_loop: "for" NAME ("<-" | "from" | "=") expr "to" expr ["step" expr] ["do"] loop_body ["end"]
 
 // WHILE flexible: con o sin paréntesis
-while_loop: "while" ["("] expr [")"] ["do"] ["begin"] stmt* ["end"]
+while_loop: "while" expr ["do"] loop_body ["end"]
 
 // REPEAT-UNTIL flexible
-repeat_loop: "repeat" ["begin"] stmt* ["end"] "until" ["("] expr [")"] [";"]
+repeat_loop: "repeat" loop_body "until" expr [";"]
 
-// IF flexible: con o sin paréntesis, con o sin begin/end
-if_stmt: "if" ["("] expr [")"] "then" ["begin"] stmt* ["end"] 
-         ["else" ["begin"] stmt* ["end"]]
+// IF flexible
+if_stmt: "if" expr "then" if_body [else_part] ["end"]
+       | "if" expr "then" if_body elif_part [else_part] ["end"]
 
-// ELSE IF (elif, elseif, else if)
-| "if" ["("] expr [")"] "then" ["begin"] stmt* ["end"]
-  ("elif" | "elseif" | "else" "if") ["("] expr [")"] "then" ["begin"] stmt* ["end"]
-  ["else" ["begin"] stmt* ["end"]]
+loop_body: stmt*
+if_body: stmt*
+
+else_part: "else" if_body
+elif_part: ("elif" | "elseif") expr "then" if_body
 
 // Bloque genérico
 block: "begin" stmt* "end"

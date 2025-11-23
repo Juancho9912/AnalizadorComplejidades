@@ -1,0 +1,4 @@
+function foo()
+begin
+    return 1;
+end

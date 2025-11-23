@@ -1,22 +1,11 @@
-function bsearch(A, n, key)
+function bsearch(n)
 begin
-    low <- 1;
-    high <- n;
-    while (low <= high) do
+    if (n <= 1) then
     begin
-        mid <- (low + high) / 2;
-        if (A[mid] = key) then
-        begin
-            return mid;
-        end
-        else
-        begin
-            if (A[mid] < key) then
-                low <- mid + 1;
-            else
-                high <- mid - 1;
-            end
-        end
+        return 1;
     end
-    return -1;
+    else
+    begin
+        return call bsearch(n / 2); 
+    end
 end
