@@ -1,0 +1,10 @@
+function print_pairs(n)
+begin
+    for i <- 1 to n do
+    begin
+        for j <- 1 to n do
+        begin
+            val <- i + j;
+        end
+    end
+end

@@ -1,0 +1,9 @@
+function sum_elements(n)
+begin
+    total <- 0;
+    for k <- 1 to n do
+    begin
+        total <- total + k;
+    end
+    return total;
+end
