@@ -1,0 +1,19 @@
+# --- SEGURIDAD (CRÍTICO) ---
+# Ignorar el archivo con las claves API
+.env
+
+# --- PYTHON (BASURA) ---
+# Archivos compilados que no sirven en otros PC
+__pycache__/
+*.pyc
+
+# --- ENTORNOS VIRTUALES ---
+# Si usas venv, env, etc.
+venv/
+env/
+.venv/
+
+# --- IDEs ---
+# Configuraciones locales de VS Code o PyCharm
+.vscode/
+.idea/
